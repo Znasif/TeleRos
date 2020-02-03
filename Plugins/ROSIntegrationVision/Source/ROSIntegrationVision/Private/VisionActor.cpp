@@ -16,7 +16,6 @@ AVisionActor::AVisionActor() : AActor()
     
     vision = CreateDefaultSubobject<UVisionComponent>(TEXT("Vision"));
     vision->ParentLink = "/world";
-	vision->DisableTFPublishing = true;
     vision->SetupAttachment(RootComponent);
 }
 

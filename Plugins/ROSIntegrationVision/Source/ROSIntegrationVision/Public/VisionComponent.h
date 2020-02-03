@@ -4,7 +4,9 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Engine/TextureRenderTarget2D.h"
-
+#include "PacketBuffer.h"
+#include "StopTime.h"
+#include "ROSIntegrationGameInstance.h"
 #include "RI/Topic.h"
 
 #include "VisionComponent.generated.h"
@@ -21,7 +23,6 @@ public:
   void SetFramerate(const float _FrameRate);
   void Pause(const bool _Pause = true);
   bool IsPaused() const;
-  void OnCameraInfo(TSharedPtr<FROSBaseMsg> msg);
   
   UPROPERTY(EditAnywhere, Category = "Vision Component")
     FString ParentLink; // Defines the link that binds to the image frame.
@@ -37,6 +38,14 @@ public:
     bool UseEngineFramerate; 
   UPROPERTY(EditAnywhere, Category = "Vision Component")
     int32 ServerPort;
+    
+  // The cameras for color, depth and objects;
+  UPROPERTY(EditAnywhere, Category = "Vision Component")
+	  USceneCaptureComponent2D * Color;
+  UPROPERTY(EditAnywhere, Category = "Vision Component")
+  	USceneCaptureComponent2D * Depth;
+  UPROPERTY(EditAnywhere, Category = "Vision Component")
+    USceneCaptureComponent2D * Object;
   
 protected:
   
@@ -54,9 +63,6 @@ private:
 		UTopic *_CameraInfoPublisher;
 
 	UPROPERTY()
-		UTopic *_CameraInfoSubscriber;
-
-	UPROPERTY()
 		UTopic *_TFPublisher;
 
 	UPROPERTY()
@@ -69,11 +75,6 @@ private:
 	class PrivateData;
 	PrivateData *Priv;
 
-	// The cameras for color, depth and objects;
-	USceneCaptureComponent2D *Color;
-	USceneCaptureComponent2D *Depth;
-	USceneCaptureComponent2D *Object;
-
 	UMaterialInstanceDynamic *MaterialDepthInstance;
   
   TArray<FFloat16Color> ImageColor, ImageDepth, ImageObject;
@@ -85,7 +86,6 @@ private:
   
   void ShowFlagsBasicSetting(FEngineShowFlags &ShowFlags) const;
   void ShowFlagsLit(FEngineShowFlags &ShowFlags) const;
-  void ShowFlagsPostProcess(FEngineShowFlags &ShowFlags) const;
   void ShowFlagsVertexColor(FEngineShowFlags &ShowFlags) const;
   void ReadImage(UTextureRenderTarget2D *RenderTarget, TArray<FFloat16Color> &ImageData) const;
   void ReadImageCompressed(UTextureRenderTarget2D *RenderTarget, TArray<FFloat16Color> &ImageData) const;
