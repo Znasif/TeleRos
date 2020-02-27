@@ -70,6 +70,12 @@ private:
 
 	UPROPERTY()
 		UTopic *_DepthPublisher;
+
+	UPROPERTY()
+		UTopic* _MotionPublisher;
+
+	UPROPERTY()
+		UTopic* _MotionSubscriber;
     
 	// Private data container
 	class PrivateData;

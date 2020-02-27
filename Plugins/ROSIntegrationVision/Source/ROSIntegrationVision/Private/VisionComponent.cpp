@@ -11,6 +11,7 @@
 #include "ROSTime.h"
 #include "sensor_msgs/CameraInfo.h"
 #include "sensor_msgs/Image.h"
+#include "sensor_msgs/PointCloud2.h"
 #include "tf2_msgs/TFMessage.h"
 
 #include "EngineUtils.h"
@@ -149,27 +150,39 @@ void UVisionComponent::BeginPlay()
 	if (rosinst)
 	{
 		_TFPublisher = NewObject<UTopic>(UTopic::StaticClass());
-		_TFPublisher->Init(rosinst->ROSIntegrationCore, 
-                           TEXT("/tf"), 
-                           TEXT("tf2_msgs/TFMessage"));
+		_TFPublisher->Init(rosinst->ROSIntegrationCore,
+			TEXT("/tf"),
+			TEXT("tf2_msgs/TFMessage"));
 
 		_CameraInfoPublisher = NewObject<UTopic>(UTopic::StaticClass());
-		_CameraInfoPublisher->Init(rosinst->ROSIntegrationCore, 
-                                   TEXT("/unreal_ros/camera_info"), 
-                                   TEXT("sensor_msgs/CameraInfo"));
+		_CameraInfoPublisher->Init(rosinst->ROSIntegrationCore,
+			TEXT("/unreal_ros/camera_info"),
+			TEXT("sensor_msgs/CameraInfo"));
 		_CameraInfoPublisher->Advertise();
 
 		_ImagePublisher = NewObject<UTopic>(UTopic::StaticClass());
-		_ImagePublisher->Init(rosinst->ROSIntegrationCore, 
-                              TEXT("/unreal_ros/image_color"), 
-                              TEXT("sensor_msgs/Image"));
+		_ImagePublisher->Init(rosinst->ROSIntegrationCore,
+			TEXT("/unreal_ros/image_color"),
+			TEXT("sensor_msgs/Image"));
 		_ImagePublisher->Advertise();
 
 		_DepthPublisher = NewObject<UTopic>(UTopic::StaticClass());
-		_DepthPublisher->Init(rosinst->ROSIntegrationCore, 
-                              TEXT("/unreal_ros/image_depth"), 
-                              TEXT("sensor_msgs/Image"));
+		_DepthPublisher->Init(rosinst->ROSIntegrationCore,
+			TEXT("/unreal_ros/image_depth"),
+			TEXT("sensor_msgs/Image"));
 		_DepthPublisher->Advertise();
+
+		_MotionPublisher = NewObject<UTopic>(UTopic::StaticClass());
+		_MotionPublisher->Init(rosinst->ROSIntegrationCore,
+			TEXT("/unreal_ros/cmd_vel"),
+			TEXT("geometry_msgs/Twist"));
+		_MotionPublisher->Advertise();
+
+		_MotionSubscriber = NewObject<UTopic>(UTopic::StaticClass());
+		_MotionSubscriber->Init(rosinst->ROSIntegrationCore,
+			TEXT("/camera/depth/points"),
+			TEXT("sensor_msgs/PointCloud2"));
+		//_MotionSubscriber->Subscribe(SubscribeCallback);
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("UnrealROSInstance not existing."));
@@ -752,3 +765,14 @@ void UVisionComponent::convertDepth(const uint16_t *in, __m128 *out) const
         0, 0, 0, 0, *(in + 3) / 100, *(in + 2) / 100, *(in + 1) / 100, *(in + 0) / 100)) ;
 	}
 }       
+
+
+std::function<void(TSharedPtr<FROSBaseMsg>)> SubscribeCallback = [](TSharedPtr<FROSBaseMsg> msg) -> void
+{
+	auto Concrete = StaticCastSharedPtr<ROSMessages::sensor_msgs::PointCloud2>(msg);
+	if (Concrete.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Successfully received"));
+	}
+	return;
+};
