@@ -9,5 +9,22 @@ public class TELEROS : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay" });
-	}
+
+        PrivateDependencyModuleNames.AddRange(
+      new string[]
+      {
+        "Core",
+        "CoreUObject",
+        "Engine",
+        "RenderCore",
+        "Slate",
+        "SlateCore",
+        "Sockets",
+        "Networking",
+        "ROSIntegration",
+        "ROSIntegrationVision"
+        // ... add private dependencies that you statically link with here ...	
+      }
+    );
+    }
 }

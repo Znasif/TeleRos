@@ -36,6 +36,7 @@ public:
 	bool DoneColor, DoneObject;
 };
 
+
 UVisionComponent::UVisionComponent() : 
 Width(960), 
 Height(540), 
@@ -111,6 +112,7 @@ void UVisionComponent::InitializeComponent()
 void UVisionComponent::BeginPlay()
 {
     Super::BeginPlay();
+
     // Initializing buffers for reading images from the GPU
 	ImageColor.AddUninitialized(Width * Height);
 	ImageDepth.AddUninitialized(Width * Height);
@@ -172,7 +174,7 @@ void UVisionComponent::BeginPlay()
 			TEXT("sensor_msgs/Image"));
 		_DepthPublisher->Advertise();
 
-		_MotionPublisher = NewObject<UTopic>(UTopic::StaticClass());
+		/*_MotionPublisher = NewObject<UTopic>(UTopic::StaticClass());
 		_MotionPublisher->Init(rosinst->ROSIntegrationCore,
 			TEXT("/unreal_ros/cmd_vel"),
 			TEXT("geometry_msgs/Twist"));
@@ -181,7 +183,8 @@ void UVisionComponent::BeginPlay()
 		_MotionSubscriber = NewObject<UTopic>(UTopic::StaticClass());
 		_MotionSubscriber->Init(rosinst->ROSIntegrationCore,
 			TEXT("/camera/depth/points"),
-			TEXT("sensor_msgs/PointCloud2"));
+			TEXT("sensor_msgs/PointCloud2"));*/
+
 		//_MotionSubscriber->Subscribe(SubscribeCallback);
 	}
 	else {

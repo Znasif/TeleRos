@@ -19,6 +19,7 @@ enum class EMessageType : uint8
 {
 	String = 0,
 	Float32 = 1,
+
 };
 
 UCLASS(Blueprintable)

@@ -7,7 +7,16 @@
 		{
 			"Name": "TELEROS",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ROSIntegrationVision",
+			"Enabled": false
 		}
 	]
 }

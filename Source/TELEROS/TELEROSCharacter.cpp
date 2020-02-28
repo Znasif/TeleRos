@@ -14,6 +14,26 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
+
+
+
+
+// Create a std::function callback object
+std::function<void(TSharedPtr<FROSBaseMsg>)> SubscribeCallback = [](TSharedPtr<FROSBaseMsg> msg) -> void
+{
+	auto Concrete = StaticCastSharedPtr<ROSMessages::std_msgs::String>(msg);
+	if (Concrete.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Incoming string was: %s"), (*(Concrete->_Data)));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Concrete is invalid!\n"));
+	}
+	return;
+};
+
+
 //////////////////////////////////////////////////////////////////////////
 // ATELEROSCharacter
 
@@ -103,6 +123,16 @@ void ATELEROSCharacter::BeginPlay()
 		VR_Gun->SetHiddenInGame(true, true);
 		Mesh1P->SetHiddenInGame(false, true);
 	}
+
+	// Initialize a topic
+	ExampleTopic = NewObject<UTopic>(UTopic::StaticClass());
+	rosinst = Cast<UROSIntegrationGameInstance>(GetGameInstance());
+
+	ExampleTopic->Init(rosinst->ROSIntegrationCore, TEXT("/chatter"), TEXT("std_msgs/String"));
+
+
+	// Subscribe to the topic
+	ExampleTopic->Subscribe(SubscribeCallback);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -140,6 +170,9 @@ void ATELEROSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 void ATELEROSCharacter::OnFire()
 {
+
+
+	UE_LOG(LogTemp, Log, TEXT("Concrete is invalid!\n"));
 	// try and fire a projectile
 	if (ProjectileClass != NULL)
 	{

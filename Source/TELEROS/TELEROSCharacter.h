@@ -2,6 +2,13 @@
 
 #pragma once
 
+
+
+#include "ROSIntegration/Classes/RI/Topic.h"
+#include "ROSIntegration/Classes/ROSIntegrationGameInstance.h"
+#include "ROSIntegration/Public/std_msgs/StdMsgsString.h"
+
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "TELEROSCharacter.generated.h"
@@ -47,6 +54,12 @@ class ATELEROSCharacter : public ACharacter
 
 public:
 	ATELEROSCharacter();
+
+
+	UPROPERTY(EditAnywhere, Category = "Topics")
+		UTopic* ExampleTopic;
+
+	UROSIntegrationGameInstance* rosinst;
 
 protected:
 	virtual void BeginPlay();
